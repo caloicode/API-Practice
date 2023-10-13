@@ -1,6 +1,8 @@
 import express from 'express';
 import axios from 'axios';
 
+import OpenAI from 'openai';
+
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -16,18 +18,11 @@ app.get('/', (req, res) => {
     res.render('index.ejs')
 });
 
-
 // $$openweathermap
 const URL_OPENWEATHERMAP = 'https://api.openweathermap.org/data/2.5/weather';
 
 app.get('/openweathermap', (req, res) => {
-    
     res.render('openweathermap.ejs')
-})
-
-app.get('/back_openweathermap', (req, res) => {
-    // res.render('openweathermap.ejs')
-    res.redirect('/')
 })
 
 app.post('/weather', async (req, res) => {
@@ -70,7 +65,7 @@ app.post('/weather', async (req, res) => {
 
 // $$bionic reading
 app.get('/bionicreading', (req, res) => {
-   res.render('bionicreading.ejs')
+    res.render('bionicreading.ejs')
 })
 
 app.post('/postText', async (req, res) => {
@@ -82,22 +77,22 @@ app.post('/postText', async (req, res) => {
     encodedParams.set('request_type', 'html');
     encodedParams.set('fixation', '1');
     encodedParams.set('saccade', '10');
-    
+
     const options = {
-      method: 'POST',
-      url: 'https://bionic-reading1.p.rapidapi.com/convert',
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded',
-        'X-RapidAPI-Key': process.env.API_KEY_BIONICREADING,
-        'X-RapidAPI-Host': 'bionic-reading1.p.rapidapi.com'
-      },
-      data: encodedParams,
+        method: 'POST',
+        url: 'https://bionic-reading1.p.rapidapi.com/convert',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            'X-RapidAPI-Key': process.env.API_KEY_BIONICREADING,
+            'X-RapidAPI-Host': 'bionic-reading1.p.rapidapi.com'
+        },
+        data: encodedParams,
     };
-    
+
     try {
         const response = await axios.request(options);
         const result = response.data
-        
+
         res.render('bionicreading.ejs', {
             content: result
         })
@@ -107,7 +102,25 @@ app.post('/postText', async (req, res) => {
     }
 })
 
+// $$openai
+//import {Configuration, OpenAIApi} from 'openai'
 
+app.get('/openai', async (req, res) => {
+
+    const openai = new OpenAI({
+        apiKey: process.env.API_KEY_OPENAI // This is also the default, can be omitted
+    });
+
+    const response = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [{
+            "role": "user",
+            "content": "You are a helpful assitant."
+        }]
+    })
+    console.log(response.data);
+
+})
 
 
 app.listen(port, () => {
