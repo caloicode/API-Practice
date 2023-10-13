@@ -1,0 +1,24 @@
+<%-include('partials/header.ejs')%>
+
+<title>Bionic Reading API</title>
+
+<a href="/" class="back">Back</a>
+</head>
+
+<body>
+    <div class="container-full container-flex">
+        <h1>Bionic Reader 📑⚡</h1>
+        <form action="/postText" method="post" class="readerOpt">
+            <textarea name="text" class="text" placeholder=" Paste text here. 😁"></textarea>
+            <button type="submit">Convert</button>
+        </form>
+
+        <div class="goodread">
+            <% if(locals.content){ %>
+            <%- content %>
+            <% } %>
+
+        </div>
+    </div>
+
+    <% -include('partials/footer.ejs') %>

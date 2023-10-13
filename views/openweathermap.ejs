@@ -1,0 +1,71 @@
+<%-include('partials/header.ejs')%>
+
+<title>OpenWeatherMap API</title>
+
+<a href="/" class="back">Back</a>
+</head>
+
+<body>
+    <div class="container-full container-flex">
+        <div class="title">OpenWeatherMap API</div>
+        <h1>Weather Weather? 🌥️</h1>
+        <form action="/weather" method="post">
+            <input type="text" name="city" placeholder="Enter City" autocomplete="off">
+            <select name="unit">
+                <option value="metric">Metric</option>
+                <option value="imperial">Imperial</option>
+            </select>
+            <button type="submit">Go!</button>
+        </form>
+
+        <% if(locals.weatherData) { %>
+        <div class="result">
+            <h3><%=weatherData.name%></h3>
+            <div class="flex-sbs">
+                <img src="https://openweathermap.org/img/wn/<%= weatherData.weather[0].icon %>@2x.png" alt=""
+                    class="weather-icon">
+                    <div><%= weatherData.weather[0].description %></div>
+            </div>
+            <table>
+                <tr>
+                    <th></th>
+                    <th>Value</th>
+                    <th>Unit</th>
+                </tr>
+                <tr>
+                    <td>Temp</td>
+                    <td><%=weatherData.main.temp %></td>
+                    <td><%= unit %></td>
+                </tr>
+                <tr>
+                    <td>Temp feels like</td>
+                    <td><%= weatherData.main.feels_like %></td>
+                    <td><%= unit %></td>
+                </tr>
+                <tr>
+                    <td>Humidity</td>
+                    <td><%= weatherData.main.humidity %></td>
+                    <td>%</td>
+                </tr>
+                <tr>
+                    <td>Pressure</td>
+                    <td><%= weatherData.main.pressure %></td>
+                    <td>hPa</td>
+                </tr>
+                <tr>
+                    <td>Wind Speed</td>
+                    <td><%= weatherData.wind.speed %></td>
+                    <td>m/s</td>
+                </tr>
+
+            </table>
+        </div>
+        <% } %>
+
+        <% if (locals.error) { %>
+        <div class="result">
+            <p>Error <%= error.cod %>, <%= error.message %></p>
+        </div>
+        <% } %>
+
+        <% -include('partials/footer.ejs') %>
